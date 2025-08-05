@@ -1,0 +1,63 @@
+<!DOCTYPE html>						
+<html>						
+<head>						
+<title>Formulario de Pedidos</title>						
+<style>						
+body { font-family: Arial; padding: 20px; max-width: 500px; margin: 0 auto; }						
+input, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; }						
+button { background: #4285F4; color: white; border: none; padding: 10px 15px; cursor: pointer; }						
+</style>						
+</head>						
+<body>						
+<h2>Realiza tu pedido</h2>						
+<form id="pedido-form">						
+<input type="text" name="nombre" placeholder="Nombre" required>						
+<textarea name="pedido" placeholder="Detalles del pedido" required></textarea>						
+<button type="submit">Enviar</button>						
+</form>						
+						
+<script>						
+document.getElementById("pedido-form").addEventListener("submit", async (e) => {						
+e.preventDefault();						
+const data = {						
+nombre: e.target.nombre.value,						
+pedido: e.target.pedido.value						
+};						
+						
+// 🔥 Reemplaza con TUS DATOS de Supabase (Settings > API)						
+const SUPABASE_URL = "https://TU_PROYECTO.supabase.co";						
+const SUPABASE_KEY = "TU_API_KEY_PUBLICA";						
+						
+try {						
+const response = await fetch(`${SUPABASE_URL}/rest/v1/pedidos`, {						
+method: "POST",						
+headers: {						
+Content-Type: "application/json",						
+apikey: SUPABASE_KEY,						
+Authorization: `Bearer ${SUPABASE_KEY}`						
+},						
+body: JSON.stringify(data)						
+});						
+alert(response.ok ? "✅ Pedido enviado" : "❌ Error al enviar");						
+e.target.reset();						
+} catch (error) {						
+alert("🚨 Error de conexión");						
+}						
+});						
+</script>						
+</body>						
+</html>						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
