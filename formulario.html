@@ -1,66 +1,78 @@
-<!DOCTYPE html>						
-<html lang="es">						
-<head>						
-<meta charset="UTF-8">						
-<meta name="viewport" content="width=device-width, initial-scale=1.0">						
-<title>Envío Discreto</title>						
-<style>						
-body { font-family: Arial, sans-serif; max-width: 500px; margin: 20px auto; padding: 20px; }						
-#mensaje { padding: 10px; margin-top: 15px; border-radius: 4px; display: none; }						
-.exito { background: #dff0d8; color: #3c763d; }						
-.error { background: #f2dede; color: #a94442; }						
-</style>						
-</head>						
-<body>						
-<h1>Envío Discreto por GET</h1>						
-<form id="formulario">						
-<input type="text" id="nombre" placeholder="Nombre" required>						
-<textarea id="pedido" placeholder="Pedido" required></textarea>						
-<button type="submit">Enviar</button>						
-</form>						
-<div id="mensaje"></div>						
-						
-<script>						
-document.getElementById('formulario').addEventListener('submit', function(e) {						
-e.preventDefault();						
-						
-// 1. Crear imagen invisible (técnica para GET)						
-const img = new Image();						
-img.style.display = 'none';						
-						
-// 2. Codificar datos y construir URL						
-const nombre = encodeURIComponent(document.getElementById('nombre').value);						
-const pedido = encodeURIComponent(document.getElementById('pedido').value);						
-const url = ` https://vwph9zcua.localto.net/pedido?nombre=${nombre}&pedido=${pedido}`;						
-						
-// 3. Manejar "éxito" (esto no verifica realmente el servidor)						
-img.onload = function() {						
-mostrarMensaje('✅ Pedido enviado', 'exito');						
-document.getElementById('formulario').reset();						
-};						
-						
-// 4. Manejar error (genérico)						
-img.onerror = function() {						
-mostrarMensaje('❌ Error al conectar', 'error');						
-};						
-						
-// 5. Disparar la petición						
-img.src = url;						
-});						
-						
-function mostrarMensaje(texto, tipo) {						
-const mensajeDiv = document.getElementById('mensaje');						
-mensajeDiv.textContent = texto;						
-mensajeDiv.className = tipo;						
-mensajeDiv.style.display = 'block';						
-}						
-</script>						
-</body>						
-</html>						
-						
-						
-						
-						
+<!DOCTYPE html>							
+<html lang="es">							
+<head>							
+<meta charset="UTF-8">							
+<meta name="viewport" content="width=device-width, initial-scale=1.0">							
+<title>Envío GET Confiable</title>							
+<style>							
+body { font-family: Arial, sans-serif; max-width: 500px; margin: 20px auto; padding: 20px; }							
+#mensaje { padding: 10px; margin-top: 15px; border-radius: 4px; display: none; }							
+.exito { background: #dff0d8; color: #3c763d; }							
+.error { background: #f2dede; color: #a94442; }							
+.cargando { background: #d9edf7; color: #31708f; }							
+</style>							
+</head>							
+<body>							
+<h1>Envío GET Confiable</h1>							
+<form id="formulario">							
+<input type="text" id="nombre" placeholder="Nombre" required>							
+<textarea id="pedido" placeholder="Pedido" required></textarea>							
+<button type="submit">Enviar</button>							
+</form>							
+<div id="mensaje"></div>							
+							
+<script>							
+document.getElementById('formulario').addEventListener('submit', async function(e) {							
+e.preventDefault();							
+const mensajeDiv = document.getElementById('mensaje');							
+							
+// Mostrar estado de carga							
+mostrarMensaje('⏳ Enviando pedido...', 'cargando');							
+							
+try {							
+// 1. Codificar datos							
+const nombre = encodeURIComponent(document.getElementById('nombre').value);							
+const pedido = encodeURIComponent(document.getElementById('pedido').value);							
+							
+// 2. Agregar timestamp para evitar cache							
+const url = `https://vwph9zcua.localto.net/pedido?nombre=${nombre}&pedido=${pedido}&_=${Date.now()}`;							
+							
+// 3. Usar fetch con timeout							
+const response = await Promise.race([							
+fetch(url),							
+new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout: El servidor no respondió")), 5000))							
+]);							
+							
+// 4. Verificar si la respuesta es válida (aunque no podamos leer el cuerpo)							
+if (!response.ok) throw new Error("Error en el servidor");							
+							
+// 5. Mostrar confirmación							
+mostrarMensaje('✅ Pedido recibido', 'exito');							
+document.getElementById('formulario').reset();							
+							
+} catch (error) {							
+mostrarMensaje(`❌ ${error.message}`, 'error');							
+console.error("Error completo:", error);							
+}							
+});							
+							
+function mostrarMensaje(texto, tipo) {							
+const mensajeDiv = document.getElementById('mensaje');							
+mensajeDiv.textContent = texto;							
+mensajeDiv.className = tipo;							
+mensajeDiv.style.display = 'block';							
+}							
+</script>							
+</body>							
+</html>							
+							
+							
+							
+							
+							
+							
+							
+							
 						
 						
 						
