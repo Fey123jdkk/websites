@@ -2,7 +2,7 @@
 <html>							
 <head>							
 <meta charset="UTF-8">							
-<title>Envío GET sin CORS</title>							
+<title>Envío GET Seguro</title>							
 <style>							
 #mensaje { padding: 10px; margin: 10px 0; display: none; }							
 .exito { background: #dfd; }							
@@ -21,27 +21,44 @@
 document.getElementById("miFormulario").addEventListener("submit", function(e) {							
 e.preventDefault();							
 							
-// 1. Crear iframe oculto							
+// 1. Crear iframe con nombre único							
+const iframeId = "hiddenFrame_" + Date.now();							
 const iframe = document.createElement("iframe");							
+iframe.name = iframeId;							
 iframe.style.display = "none";							
 document.body.appendChild(iframe);							
 							
-// 2. Codificar datos							
-const nombre = encodeURIComponent(document.getElementById("nombre").value);							
-const pedido = encodeURIComponent(document.getElementById("pedido").value);							
+// 2. Crear formulario oculto							
+const form = document.createElement("form");							
+form.method = "GET";							
+form.action = `https://vwph9zcua.localto.net/pedido?_=${Date.now()}`;							
+form.target = iframeId;							
 							
-// 3. URL con parámetros GET (y timestamp para evitar cache)							
-const url = `https://vwph9zcua.localto.net/pedido?nombre=${nombre}&pedido=${pedido}&_=${Date.now()}`;							
+// 3. Agregar campos							
+const addField = (name, value) => {							
+const input = document.createElement("input");							
+input.type = "hidden";							
+input.name = name;							
+input.value = value;							
+form.appendChild(input);							
+};							
 							
-// 4. Configurar temporizador para verificación							
+addField("nombre", document.getElementById("nombre").value);							
+addField("pedido", document.getElementById("pedido").value);							
+							
+// 4. Enviar y limpiar							
+document.body.appendChild(form);							
+form.submit();							
+							
+// 5. Feedback visual (simulado)							
+mostrarMensaje("✅ Pedido en proceso...", "exito");							
+document.getElementById("miFormulario").reset();							
+							
+// Limpiar después de 3 segundos							
 setTimeout(() => {							
-const mensaje = iframe.contentWindow?.location.href.includes("success") 							
-//✅ Pedido recibido : "❌ Error en el envío";							
-							
-mostrarMensaje(mensaje, iframe.contentWindow ? "exito" : "error") iframe.remove()}, 2000)							
-							
-// 5. Disparar la petición							
-iframe.src = url;							
+iframe.remove();							
+form.remove();							
+}, 3000);							
 });							
 							
 function mostrarMensaje(texto, tipo) {							
@@ -56,24 +73,22 @@ div.className = tipo;
 							
 							
 							
-						
-						
-						
-						
-						
-						
-						
-						
-						
-					
-					
-						
-						
 							
 							
 							
 							
-						
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
 						
 						
 						
