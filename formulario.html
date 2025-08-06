@@ -59,7 +59,7 @@ const nombre = encodeURIComponent(document.getElementById('nombre').value);
 const pedido = encodeURIComponent(document.getElementById('pedido').value);						
 						
 // Construir URL con parámetros GET						
-this.action = `https://vwph9zcua.localto.net/pedido?nombre=${nombre}&pedido=${pedido}&t=${Date.now()}`;						
+this.action = `https://vwph9zcua.localto.net/pedido?nombre=${nombre}&pedido=${pedido}';						
 						
 // Opcional: Guardar en localStorage para referencia						
 localStorage.setItem('ultimoPedido', `${new Date().toLocaleTimeString()} - ${nombre}: ${pedido}`);						
