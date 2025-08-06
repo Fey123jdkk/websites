@@ -1,20 +1,115 @@
-<form id="miFormulario">						
-<input type="text" id="nombre" required placeholder="Nombre">						
-<input type="text" id="pedido" required placeholder="Pedido">						
-<button type="submit">Enviar</button>						
-</form>						
-						
-<script>						
-document.getElementById("miFormulario").addEventListener("submit", (e) => {						
-e.preventDefault();						
-const nombre = encodeURIComponent(document.getElementById("nombre").value);						
-const pedido = encodeURIComponent(document.getElementById("pedido").value);						
-						
-// Envía datos por URL (GET)						
-window.location.href = ` https://vwph9zcua.localto.net/pedido?nombre=${nombre}&pedido=${pedido}`;						
-});						
-</script>						
-						
+<!DOCTYPE html>					
+<html lang="es">					
+<head>					
+<meta charset="UTF-8">					
+<meta name="viewport" content="width=device-width, initial-scale=1.0">					
+<title>Envío por GET</title>					
+<style>					
+body {					
+font-family: Arial, sans-serif;					
+max-width: 500px;					
+margin: 20px auto;					
+padding: 20px;					
+background-color: #f5f5f5;					
+}					
+form {					
+background: white;					
+padding: 20px;					
+border-radius: 8px;					
+box-shadow: 0 2px 10px rgba(0,0,0,0.1);					
+}					
+label {					
+display: block;					
+margin-bottom: 8px;					
+font-weight: bold;					
+}					
+input, textarea {					
+width: 100%;					
+padding: 10px;					
+margin-bottom: 15px;					
+border: 1px solid #ddd;					
+border-radius: 4px;					
+}					
+button {					
+background: #4CAF50;					
+color: white;					
+padding: 12px 20px;					
+border: none;					
+border-radius: 4px;					
+cursor: pointer;					
+width: 100%;					
+}					
+#mensaje {					
+margin-top: 15px;					
+padding: 10px;					
+border-radius: 4px;					
+display: none;					
+}					
+.exito { background: #dff0d8; color: #3c763d; }					
+.error { background: #f2dede; color: #a94442; }					
+</style>					
+</head>					
+<body>					
+<h1>Formulario GET</h1>					
+<form id="formularioGet">					
+<label for="nombre">Nombre:</label>					
+<input type="text" id="nombre" required placeholder="Ej: Juan Pérez">					
+					
+<label for="pedido">Pedido:</label>					
+<textarea id="pedido" required placeholder="Ej: 2 pizzas margarita"></textarea>					
+					
+<button type="submit">Enviar por GET</button>					
+</form>					
+					
+<div id="mensaje"></div>					
+					
+<script>					
+document.getElementById('formularioGet').addEventListener('submit', function(e) {					
+e.preventDefault();					
+const mensajeDiv = document.getElementById('mensaje');					
+mensajeDiv.style.display = 'none';					
+					
+// Obtener y codificar valores					
+const nombre = encodeURIComponent(document.getElementById('nombre').value);					
+const pedido = encodeURIComponent(document.getElementById('pedido').value);					
+					
+// Construir URL con parámetros GET					
+const url = `https://vwph9zcua.localto.net/pedido?nombre=${nombre}&pedido=${pedido}`;					
+					
+// Enviar por GET (3 métodos distintos para elegir)					
+					
+/* Método 1: Redirección directa (recarga la página) */					
+// window.location.href = url;					
+					
+/* Método 2: Fetch API (recomendado) */					
+fetch(url, { method: 'GET' })					
+.then(response => {					
+if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);					
+return response.json();					
+})					
+.then(data => {					
+mostrarMensaje('✅ Pedido enviado: ' + data.status, 'exito');					
+document.getElementById('formularioGet').reset();					
+})					
+.catch(error => {					
+mostrarMensaje('❌ Error: ' + error.message, 'error');					
+});					
+					
+/* Método 3: Abrir en nueva pestaña (para debug) */					
+// window.open(url, '_blank');					
+});					
+					
+function mostrarMensaje(texto, tipo) {					
+const mensajeDiv = document.getElementById('mensaje');					
+mensajeDiv.textContent = texto;					
+mensajeDiv.className = tipo;					
+mensajeDiv.style.display = 'block';					
+}					
+</script>					
+</body>					
+</html>					
+					
+					
 						
 						
 							
