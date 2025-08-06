@@ -1,20 +1,16 @@
 <!DOCTYPE html>							
-<html lang="es">							
+<html>							
 <head>							
 <meta charset="UTF-8">							
-<meta name="viewport" content="width=device-width, initial-scale=1.0">							
-<title>Envío GET Confiable</title>							
+<title>Envío GET sin CORS</title>							
 <style>							
-body { font-family: Arial, sans-serif; max-width: 500px; margin: 20px auto; padding: 20px; }							
-#mensaje { padding: 10px; margin-top: 15px; border-radius: 4px; display: none; }							
-.exito { background: #dff0d8; color: #3c763d; }							
-.error { background: #f2dede; color: #a94442; }							
-.cargando { background: #d9edf7; color: #31708f; }							
+#mensaje { padding: 10px; margin: 10px 0; display: none; }							
+.exito { background: #dfd; }							
+.error { background: #fdd; }							
 </style>							
 </head>							
 <body>							
-<h1>Envío GET Confiable</h1>							
-<form id="formulario">							
+<form id="miFormulario">							
 <input type="text" id="nombre" placeholder="Nombre" required>							
 <textarea id="pedido" placeholder="Pedido" required></textarea>							
 <button type="submit">Enviar</button>							
@@ -22,45 +18,39 @@ body { font-family: Arial, sans-serif; max-width: 500px; margin: 20px auto; padd
 <div id="mensaje"></div>							
 							
 <script>							
-document.getElementById('formulario').addEventListener('submit', async function(e) {							
+document.getElementById("miFormulario").addEventListener("submit", function(e) {							
 e.preventDefault();							
-const mensajeDiv = document.getElementById('mensaje');							
 							
-// Mostrar estado de carga							
-mostrarMensaje('⏳ Enviando pedido...', 'cargando');							
+// 1. Crear iframe oculto							
+const iframe = document.createElement("iframe");							
+iframe.style.display = "none";							
+document.body.appendChild(iframe);							
 							
-try {							
-// 1. Codificar datos							
-const nombre = encodeURIComponent(document.getElementById('nombre').value);							
-const pedido = encodeURIComponent(document.getElementById('pedido').value);							
+// 2. Codificar datos							
+const nombre = encodeURIComponent(document.getElementById("nombre").value);							
+const pedido = encodeURIComponent(document.getElementById("pedido").value);							
 							
-// 2. Agregar timestamp para evitar cache							
+// 3. URL con parámetros GET (y timestamp para evitar cache)							
 const url = `https://vwph9zcua.localto.net/pedido?nombre=${nombre}&pedido=${pedido}&_=${Date.now()}`;							
 							
-// 3. Usar fetch con timeout							
-const response = await Promise.race([							
-fetch(url),							
-new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout: El servidor no respondió")), 5000))							
-]);							
+// 4. Configurar temporizador para verificación							
+setTimeout(() => {							
+const mensaje = iframe.contentWindow?.location.href.includes("success") ?							
+✅ Pedido recibido : "❌ Error en el envío";							
 							
-// 4. Verificar si la respuesta es válida (aunque no podamos leer el cuerpo)							
-if (!response.ok) throw new Error("Error en el servidor");							
+mostrarMensaje(mensaje, iframe.contentWindow ? "exito" : "error");							
+iframe.remove();							
+}, 2000);							
 							
-// 5. Mostrar confirmación							
-mostrarMensaje('✅ Pedido recibido', 'exito');							
-document.getElementById('formulario').reset();							
-							
-} catch (error) {							
-mostrarMensaje(`❌ ${error.message}`, 'error');							
-console.error("Error completo:", error);							
-}							
+// 5. Disparar la petición							
+iframe.src = url;							
 });							
 							
 function mostrarMensaje(texto, tipo) {							
-const mensajeDiv = document.getElementById('mensaje');							
-mensajeDiv.textContent = texto;							
-mensajeDiv.className = tipo;							
-mensajeDiv.style.display = 'block';							
+const div = document.getElementById("mensaje");							
+div.textContent = texto;							
+div.style.display = "block";							
+div.className = tipo;							
 }							
 </script>							
 </body>							
@@ -68,12 +58,6 @@ mensajeDiv.style.display = 'block';
 							
 							
 							
-							
-							
-							
-							
-							
-						
 						
 						
 						
