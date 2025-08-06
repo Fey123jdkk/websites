@@ -24,10 +24,11 @@ nombre: e.target.nombre.value,
 pedido: e.target.pedido.value						
 };						
 						
-// 🔥 Reemplaza con TUS DATOS de Supabase (Settings > API)						
+
+import { createClient } from '@supabase/supabase-js'
 const SUPABASE_URL = "https://xrfhousgtbylnxfzootc.supabase.co";						
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyZmhvdXNndGJ5bG54Znpvb3RjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0MzQ3MzAsImV4cCI6MjA3MDAxMDczMH0.x-Kv1EfnlEHLz7cJXkqfSqdCauBxTmW_eHTcDDgvs-0";						
-						
+const supabase = createClient(supabaseUrl, supabaseKey)								
 try {						
 const response = await fetch(`${SUPABASE_URL}/rest/v1/pedidos`, {						
 method: "POST",						
