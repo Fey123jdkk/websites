@@ -1,35 +1,76 @@
 <!DOCTYPE html>						
-<html>						
+<html lang="es">						
 <head>						
+<meta charset="UTF-8">						
+<meta name="viewport" content="width=device-width, initial-scale=1.0">						
 <title>Formulario de Pedidos</title>						
 <style>						
-body { font-family: Arial; padding: 20px; max-width: 500px; margin: 0 auto; }						
-input, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; }						
-button { background: #4285F4; color: white; border: none; padding: 10px 15px; cursor: pointer; }						
+body {						
+font-family: Arial, sans-serif;						
+max-width: 600px;						
+margin: 0 auto;						
+padding: 20px;						
+background: #f5f5f5;						
+}						
+form {						
+background: white;						
+padding: 20px;						
+border-radius: 8px;						
+box-shadow: 0 2px 4px rgba(0,0,0,0.1);						
+}						
+input, textarea {						
+width: 100%;						
+padding: 10px;						
+margin-bottom: 15px;						
+border: 1px solid #ddd;						
+border-radius: 4px;						
+box-sizing: border-box;						
+}						
+button {						
+background: #4285F4;						
+color: white;						
+border: none;						
+padding: 12px 20px;						
+border-radius: 4px;						
+cursor: pointer;						
+font-size: 16px;						
+width: 100%;						
+}						
+button:hover {						
+background: #3367D6;						
+}						
 </style>						
 </head>						
 <body>						
-<h2>Realiza tu pedido</h2>						
+<h2 style="color: #4285F4; text-align: center;">Formulario de Pedidos</h2>						
+						
 <form id="pedido-form">						
-<input type="text" name="nombre" placeholder="Nombre" required>						
-<textarea name="pedido" placeholder="Detalles del pedido" required></textarea>						
-<button type="submit">Enviar</button>						
+<input type="text" name="nombre" placeholder="Tu nombre" required>						
+<textarea name="pedido" placeholder="Detalles del pedido" rows="5" required></textarea>						
+<button type="submit">Enviar Pedido</button>						
 </form>						
 						
 <script>						
+// Debug inicial						
+console.log("✅ Script cargado correctamente");						
+						
 document.getElementById("pedido-form").addEventListener("submit", async (e) => {						
 e.preventDefault();						
+console.log("🔄 Formulario enviado - Iniciando envío...");						
+						
+// Datos del formulario						
 const data = {						
 nombre: e.target.nombre.value,						
 pedido: e.target.pedido.value						
 };						
+console.log("📤 Datos a enviar:", data);						
 						
-
-import { createClient } from '@supabase/supabase-js'
-const SUPABASE_URL = "https://xrfhousgtbylnxfzootc.supabase.co";						
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyZmhvdXNndGJ5bG54Znpvb3RjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0MzQ3MzAsImV4cCI6MjA3MDAxMDczMH0.x-Kv1EfnlEHLz7cJXkqfSqdCauBxTmW_eHTcDDgvs-0";						
-const supabase = createClient(supabaseUrl, supabaseKey)								
+// 🔥 REEMPLAZA CON TUS DATOS DE SUPABASE (Settings > API)						
+const SUPABASE_URL = "https://TU_PROYECTO.supabase.co";						
+const SUPABASE_KEY = "TU_API_KEY_PUBLICA";						
+						
 try {						
+console.log("⚡ Enviando a Supabase...");						
 const response = await fetch(`${SUPABASE_URL}/rest/v1/pedidos`, {						
 method: "POST",						
 headers: {						
@@ -39,15 +80,35 @@ Authorization: `Bearer ${SUPABASE_KEY}`
 },						
 body: JSON.stringify(data)						
 });						
-alert(response.ok ? "✅ Pedido enviado" : "❌ Error al enviar");						
-e.target.reset();						
+						
+const result = await response.json();						
+console.log("📥 Respuesta de Supabase:", result);						
+						
+if (!response.ok) {						
+throw new Error(result.message || `Error ${response.status}`);						
+}						
+						
+alert("✅ Pedido enviado con éxito!");						
+e.target.reset(); // Limpiar formulario						
+						
 } catch (error) {						
-alert("🚨 Error de conexión");						
+console.error("❌ Error crítico:", error);						
+alert(`Error al enviar: ${error.message}`);						
 }						
 });						
 </script>						
 </body>						
 </html>						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
 						
 						
 						
