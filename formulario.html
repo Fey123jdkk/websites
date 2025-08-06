@@ -38,9 +38,7 @@ setTimeout(() => {
 const mensaje = iframe.contentWindow?.location.href.includes("success") 							
 //✅ Pedido recibido : "❌ Error en el envío";							
 							
-mostrarMensaje(mensaje, iframe.contentWindow ? "exito" : "error");							
-iframe.remove();							
-}, 2000);							
+mostrarMensaje(mensaje, iframe.contentWindow ? "exito" : "error") iframe.remove()}, 2000)							
 							
 // 5. Disparar la petición							
 iframe.src = url;							
