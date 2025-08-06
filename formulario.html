@@ -36,7 +36,7 @@ const url = `https://vwph9zcua.localto.net/pedido?nombre=${nombre}&pedido=${pedi
 // 4. Configurar temporizador para verificación							
 setTimeout(() => {							
 const mensaje = iframe.contentWindow?.location.href.includes("success") ?							
-✅ Pedido recibido : "❌ Error en el envío";							
+//✅ Pedido recibido : "❌ Error en el envío";							
 							
 mostrarMensaje(mensaje, iframe.contentWindow ? "exito" : "error");							
 iframe.remove();							
