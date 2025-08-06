@@ -1,22 +1,69 @@
-<div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; background: #f5f5f5; border-radius: 8px;">								
-<h2 style="color: #4285F4;">Formulario de Pedido</h2>								
-								
-<!-- Formulario tradicional que redirige a tu servidor -->								
-<form action="http://26.173.19.197:8080/pedido" method="post" target="_blank">								
-<input type="text" name="nombre" placeholder="Tu nombre" required								
-style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px;">								
-								
-<textarea name="pedido" placeholder="Detalles del pedido" required								
-style="width: 100%; padding: 10px; height: 120px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px;"></textarea>								
-								
-<input type="submit" value="Enviar Pedido"								
-style="background: #4285F4; color: white; border: none; padding: 12px 20px; width: 100%; border-radius: 4px; font-size: 16px; cursor: pointer;">								
-</form>								
-								
-<p style="font-size: 12px; color: #666; margin-top: 15px;">								
-Nota: Al enviar se abrirá una nueva pestaña con la respuesta del servidor.								
-</p>								
-</div>					
+<!DOCTYPE html>						
+<html>						
+<head>						
+<title>Envío Directo a VB.NET</title>						
+<style>						
+body { font-family: Arial; max-width: 500px; margin: 0 auto; padding: 20px; }						
+input, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; }						
+button { background: #4285F4; color: white; border: none; padding: 12px; cursor: pointer; }						
+#resultado { margin-top: 10px; padding: 10px; display: none; }						
+.exito { background: #e6f7ee; color: #388e3c; }						
+.error { background: #ffebee; color: #d32f2f; }						
+</style>						
+</head>						
+<body>						
+						
+<h2>Formulario Simple</h2>						
+						
+<form id="formulario">						
+<input type="text" name="nombre" placeholder="Nombre" required>						
+<textarea name="pedido" placeholder="Pedido" required></textarea>						
+<button type="submit">Enviar</button>						
+</form>						
+						
+<div id="resultado"></div>						
+						
+<script>						
+document.getElementById("formulario").addEventListener("submit", async (e) => {						
+e.preventDefault();						
+const resultado = document.getElementById("resultado");						
+						
+// 🔥 REEMPLAZA CON TU IP Y RUTA (ej: "http://26.173.19.123/pedido")						
+const SERVER_URL = "http://26.173.19.197/pedido";						
+						
+try {						
+const response = await fetch(SERVER_URL, {						
+method: "POST",						
+headers: { "Content-Type": "application/json" },						
+body: JSON.stringify({						
+nombre: e.target.nombre.value,						
+pedido: e.target.pedido.value						
+})						
+});						
+						
+const data = await response.json();						
+						
+if (!response.ok) throw new Error(data.error || "Error en el servidor");						
+						
+resultado.textContent = "✅ " + (data.message || "Enviado correctamente");						
+resultado.className = "exito";						
+						
+} catch (error) {						
+resultado.textContent = "❌ " + error.message;						
+resultado.className = "error";						
+console.error("Error detallado:", error);						
+} finally {						
+resultado.style.display = "block";						
+}						
+});						
+</script>						
+						
+</body>						
+</html>						
+						
+						
+						
+						
 						
 						
 						
