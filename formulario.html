@@ -1,61 +1,70 @@
-<!DOCTYPE html>					
-<html>					
-<head>					
-<title>Prueba Supabase</title>					
-</head>					
-<body>					
-					
-<!-- Formulario mínimo -->					
-<form id="test-form">					
-<input type="text" name="nombre" placeholder="Nombre" required>					
-<button type="submit">Enviar prueba</button>					
-</form>					
-					
-<!-- JavaScript esencial -->					
-<script>					
-document.getElementById("test-form").addEventListener("submit", async (e) => {					
-e.preventDefault();					
-					
-// 🔥 Reemplaza con TUS credenciales (Settings > API en Supabase)					
-const SUPABASE_URL = "https://xrfhousgtbylnxfzootc.supabase.co";					
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyZmhvdXNndGJ5bG54Znpvb3RjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0MzQ3MzAsImV4cCI6MjA3MDAxMDczMH0.x-Kv1EfnlEHLz7cJXkqfSqdCauBxTmW_eHTcDDgvs-0";					
-					
-try {					
-const response = await fetch(`${SUPABASE_URL}/rest/v1/pedidos`, {					
-method: "POST",					
-headers: {					
-Content-Type: "application/json",					
-apikey: SUPABASE_KEY,					
-Authorization: `Bearer ${SUPABASE_KEY}`					
-},					
-body: JSON.stringify({					
-nombre: e.target.nombre.value,					
-pedido: "Prueba exitosa" // Campo fijo para simplificar					
-})					
-});					
-					
-const result = await response.json();					
-console.log("Respuesta de Supabase:", result);					
-alert(response.ok ? "✅ Enviado correctamente" : "❌ Error: " + result.message);					
-					
-} catch (error) {					
-console.error("Error fatal:", error);					
-alert("🚨 Fallo en la conexión");					
-}					
-});					
-</script>					
-					
-</body>					
-</html>					
-					
-					
-					
-					
-					
-					
-					
-					
-					
+<!DOCTYPE html>						
+<html>						
+<head>						
+<title>Formulario a VB.NET</title>						
+<style>						
+body { font-family: Arial; max-width: 500px; margin: 0 auto; padding: 20px; }						
+input, textarea { width: 100%; padding: 10px; margin: 10px 0; }						
+button { background: #4285F4; color: white; border: none; padding: 12px; cursor: pointer; }						
+</style>						
+</head>						
+<body>						
+<h2>Formulario de Pedidos</h2>						
+<form id="miFormulario">						
+<input type="text" name="nombre" placeholder="Nombre" required>						
+<textarea name="pedido" placeholder="Pedido" required></textarea>						
+<button type="submit">Enviar</button>						
+</form>						
+<p id="resultado"></p>						
+						
+<script>						
+document.getElementById("miFormulario").addEventListener("submit", async (e) => {						
+e.preventDefault();						
+const resultado = document.getElementById("resultado");						
+						
+// 🔥 Reemplaza con la IP de tu PC en Radmin y el puerto de tu servidor VB.NET						
+const SERVER_URL = "http://26.173.19.197:8080/pedidos"; // Ejemplo						
+						
+try {						
+const response = await fetch(SERVER_URL, {						
+method: "POST",						
+headers: { "Content-Type": "application/json" },						
+body: JSON.stringify({						
+nombre: e.target.nombre.value,						
+pedido: e.target.pedido.value						
+})						
+});						
+						
+const data = await response.json();						
+resultado.textContent = response.ok ? "✅ " + data.mensaje : "❌ Error: " + data.error;						
+} catch (error) {						
+resultado.textContent = "🚨 Error de conexión: " + error.message;						
+console.error("Detalles:", error);						
+}						
+});						
+</script>						
+</body>						
+</html>						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
 					
 					
 					
