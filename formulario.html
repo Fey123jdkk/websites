@@ -37,24 +37,21 @@ pedido: pedido
 // Enviar con fetch (POST + JSON)					
 fetch('https://vwph9zcua.localto.net/pedido', {					
 method: 'POST',	
-mode:'cors',	
+
 headers: {					
 'Content-Type': 'application/json' // 👈 Cabecera importante					
 },					
 body: JSON.stringify(datos) // Convierte a JSON					
 })					
 .then(response => {					
-if (response.ok) {					
-alert('Pedido enviado correctamente');					
-document.getElementById('pedidoForm').reset();					
-} else {					
-alert('Error al enviar el pedido');					
-}					
-})					
-.catch(error => {					
-alert('Error de conexión: ' + error.message);					
-});					
-});					
+if (!response.ok) throw new Error("Error http: "+response.status);
+return response.json();
+})
+.then(data => console.log("Exito",data))
+.catch(error => console.error("error en feth",error));	
+)};	
+			
+					
 </script>					
 </body>					
 </html>					
