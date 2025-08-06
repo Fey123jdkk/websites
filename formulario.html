@@ -1,197 +1,233 @@
-<!DOCTYPE html>						
-<html lang="es">						
-<head>						
-<meta charset="UTF-8">						
-<meta name="viewport" content="width=device-width, initial-scale=1.0">						
-<title>Envío de Pedidos</title>						
-<style>						
-:root {						
---primary: #4a6fa5;						
---success: #4caf50;						
---error: #f44336;						
---background: #f5f7fa;						
-}						
-						
-body {						
-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;						
-background-color: var(--background);						
-margin: 0;						
-padding: 20px;						
-display: flex;						
-justify-content: center;						
-align-items: center;						
-min-height: 100vh;						
-}						
-						
-.container {						
-background: white;						
-border-radius: 10px;						
-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);						
-width: 100%;						
-max-width: 500px;						
-padding: 30px;						
-}						
-						
-h1 {						
-color: var(--primary);						
-text-align: center;						
-margin-bottom: 25px;						
-}						
-						
-.form-group {						
-margin-bottom: 20px;						
-}						
-						
-label {						
-display: block;						
-margin-bottom: 8px;						
-font-weight: 600;						
-color: #333;						
-}						
-						
-input, textarea {						
-width: 100%;						
-padding: 12px;						
-border: 1px solid #ddd;						
-border-radius: 6px;						
-font-size: 16px;						
-transition: border 0.3s;						
-box-sizing: border-box;						
-}						
-						
-input:focus, textarea:focus {						
-border-color: var(--primary);						
-outline: none;						
-box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.2);						
-}						
-						
-textarea {						
-min-height: 100px;						
-resize: vertical;						
-}						
-						
-button {						
-background-color: var(--primary);						
-color: white;						
-border: none;						
-border-radius: 6px;						
-padding: 14px;						
-width: 100%;						
-font-size: 16px;						
-font-weight: 600;						
-cursor: pointer;						
-transition: background-color 0.3s;						
-}						
-						
-button:hover {						
-background-color: #3a5a8f;						
-}						
-						
-button:disabled {						
-background-color: #cccccc;						
-cursor: not-allowed;						
-}						
-						
-.alert {						
-padding: 15px;						
-border-radius: 6px;						
-margin-top: 20px;						
-display: none;						
-}						
-						
-.alert-success {						
-background-color: #e8f5e9;						
-color: var(--success);						
-border: 1px solid #c8e6c9;						
-}						
-						
-.alert-error {						
-background-color: #ffebee;						
-color: var(--error);						
-border: 1px solid #ffcdd2;						
-}						
-						
-.hidden-frame {						
-position: absolute;						
-width: 1px;						
-height: 1px;						
-padding: 0;						
-margin: -1px;						
-overflow: hidden;						
-clip: rect(0, 0, 0, 0);						
-border: 0;						
-}						
-</style>						
-</head>						
-<body>						
-<div class="container">						
-<h1>Formulario de Pedidos</h1>						
-<form id="pedidoForm">						
-<div class="form-group">						
-<label for="nombre">Nombre:</label>						
-<input type="text" id="nombre" required placeholder="Tu nombre completo">						
-</div>						
-						
-<div class="form-group">						
-<label for="pedido">Detalles del pedido:</label>						
-<textarea id="pedido" required placeholder="Describe tu pedido aquí..."></textarea>						
-</div>						
-						
-<button type="submit" id="submitBtn">Enviar Pedido</button>						
-						
-<div id="mensaje" class="alert"></div>						
-</form>						
-						
-<!-- Iframe oculto para la redirección -->						
-<iframe id="hiddenFrame" name="hiddenFrame" class="hidden-frame"></iframe>						
-</div>						
-						
-<script>						
-document.getElementById('pedidoForm').addEventListener('submit', function(e) {						
-e.preventDefault();						
-						
-// Mostrar estado de carga						
-const submitBtn = document.getElementById('submitBtn');						
-submitBtn.disabled = true;						
-submitBtn.textContent = 'Enviando...';						
-						
-const mensaje = document.getElementById('mensaje');						
-mensaje.style.display = 'none';						
-						
-// Obtener y codificar valores						
-const nombre = encodeURIComponent(document.getElementById('nombre').value);						
-const pedido = encodeURIComponent(document.getElementById('pedido').value);						
-						
-// Crear formulario oculto para redirección						
-const hiddenForm = document.createElement('form');						
-hiddenForm.method = 'GET';						
-hiddenForm.action = ` https://vwph9zcua.localto.net/pedido?nombre=${nombre}&pedido=${pedido}&_=${Date.now()}`;						
-hiddenForm.target = 'hiddenFrame';						
-document.body.appendChild(hiddenForm);						
-						
-// Disparar el envío						
-hiddenForm.submit();						
-						
-// Mostrar mensaje de éxito (simulado)						
-setTimeout(() => {						
-mensaje.textContent = '✅ Pedido enviado correctamente';						
-mensaje.className = 'alert alert-success';						
-mensaje.style.display = 'block';						
-						
-submitBtn.disabled = false;						
-submitBtn.textContent = 'Enviar Pedido';						
-document.getElementById('pedidoForm').reset();						
-						
-// Limpiar formulario oculto						
-hiddenForm.remove();						
-}, 1500);						
-});						
-</script>						
-</body>						
-</html>						
-						
-						
-						
+<!DOCTYPE html>							
+<html lang="es">							
+<head>							
+<meta charset="UTF-8">							
+<meta name="viewport" content="width=device-width, initial-scale=1.0">							
+<title>Sistema de Pedidos</title>							
+<style>							
+:root {							
+--primary: #4a6fa5;							
+--success: #4caf50;							
+--warning: #ff9800;							
+--error: #f44336;							
+}							
+							
+body {							
+font-family: 'Arial', sans-serif;							
+line-height: 1.6;							
+margin: 0;							
+padding: 20px;							
+background-color: #f5f7fa;							
+}							
+							
+.container {							
+max-width: 600px;							
+margin: 0 auto;							
+background: white;							
+padding: 30px;							
+border-radius: 8px;							
+box-shadow: 0 2px 10px rgba(0,0,0,0.1);							
+}							
+							
+h1 {							
+color: var(--primary);							
+text-align: center;							
+margin-bottom: 25px;							
+}							
+							
+.form-group {							
+margin-bottom: 20px;							
+}							
+							
+label {							
+display: block;							
+margin-bottom: 8px;							
+font-weight: bold;							
+}							
+							
+input, textarea {							
+width: 100%;							
+padding: 10px;							
+border: 1px solid #ddd;							
+border-radius: 4px;							
+font-size: 16px;							
+}							
+							
+textarea {							
+min-height: 100px;							
+resize: vertical;							
+}							
+							
+button {							
+background-color: var(--primary);							
+color: white;							
+border: none;							
+padding: 12px 20px;							
+border-radius: 4px;							
+cursor: pointer;							
+font-size: 16px;							
+width: 100%;							
+transition: background 0.3s;							
+}							
+							
+button:hover {							
+background-color: #3a5a8f;							
+}							
+							
+button:disabled {							
+background-color: #cccccc;							
+cursor: not-allowed;							
+}							
+							
+.alert {							
+padding: 15px;							
+margin-top: 20px;							
+border-radius: 4px;							
+display: none;							
+}							
+							
+.alert-success {							
+background-color: #e8f5e9;							
+color: var(--success);							
+border: 1px solid #c8e6c9;							
+}							
+							
+.alert-warning {							
+background-color: #fff3e0;							
+color: var(--warning);							
+border: 1px solid #ffe0b2;							
+}							
+							
+.alert-error {							
+background-color: #ffebee;							
+color: var(--error);							
+border: 1px solid #ffcdd2;							
+}							
+							
+.hidden-iframe {							
+position: absolute;							
+width: 1px;							
+height: 1px;							
+padding: 0;							
+margin: -1px;							
+overflow: hidden;							
+clip: rect(0,0,0,0);							
+border: 0;							
+}							
+</style>							
+</head>							
+<body>							
+<div class="container">							
+<h1>Registro de Pedidos</h1>							
+<form id="pedidoForm">							
+<div class="form-group">							
+<label for="nombre">Nombre completo:</label>							
+<input type="text" id="nombre" required>							
+</div>							
+							
+<div class="form-group">							
+<label for="pedido">Detalles del pedido:</label>							
+<textarea id="pedido" required></textarea>							
+</div>							
+							
+<button type="submit" id="submitBtn">Registrar Pedido</button>							
+							
+<div id="mensaje" class="alert"></div>							
+</form>							
+							
+<iframe id="hiddenFrame" name="hiddenFrame" class="hidden-iframe"></iframe>							
+</div>							
+							
+<script>							
+document.getElementById('pedidoForm').addEventListener('submit', function(e) {							
+e.preventDefault();							
+							
+const submitBtn = document.getElementById('submitBtn');							
+const mensaje = document.getElementById('mensaje');							
+							
+// Mostrar estado de carga							
+submitBtn.disabled = true;							
+submitBtn.textContent = 'Enviando...';							
+mensaje.style.display = 'none';							
+							
+// Obtener y codificar valores							
+const nombre = encodeURIComponent(document.getElementById('nombre').value);							
+const pedido = encodeURIComponent(document.getElementById('pedido').value);							
+							
+// Crear formulario oculto para redirección							
+const hiddenForm = document.createElement('form');							
+hiddenForm.method = 'GET';							
+hiddenForm.action = `https://vwph9zcua.localto.net/pedido?nombre=${nombre}&pedido=${pedido}&timestamp=${Date.now()}`;							
+hiddenForm.target = 'hiddenFrame';							
+							
+// Agregar campo adicional para evitar bloqueo							
+const tokenField = document.createElement('input');							
+tokenField.type = 'hidden';							
+tokenField.name = 'token';							
+tokenField.value = Math.random().toString(36).substring(2);							
+hiddenForm.appendChild(tokenField);							
+							
+document.body.appendChild(hiddenForm);							
+							
+// Intentar verificar el envío							
+const verificationTimer = setTimeout(() => {							
+mensaje.textContent = '⚠ El pedido se envió, pero no podemos verificar la respuesta del servidor';							
+mensaje.className = 'alert alert-warning';							
+mensaje.style.display = 'block';							
+							
+submitBtn.disabled = false;							
+submitBtn.textContent = 'Registrar Pedido';							
+document.getElementById('pedidoForm').reset();							
+}, 3000);							
+							
+// Evento para cuando se carga el iframe (no siempre funciona por CORS)							
+document.getElementById('hiddenFrame').onload = function() {							
+clearTimeout(verificationTimer);							
+mensaje.textContent = '✅ Pedido registrado exitosamente';							
+mensaje.className = 'alert alert-success';							
+mensaje.style.display = 'block';							
+							
+submitBtn.disabled = false;							
+submitBtn.textContent = 'Registrar Pedido';							
+document.getElementById('pedidoForm').reset();							
+hiddenForm.remove();							
+};							
+							
+// Disparar el envío							
+hiddenForm.submit();							
+});							
+</script>							
+</body>							
+</html>							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
 							
 							
 							
