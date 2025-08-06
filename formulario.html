@@ -36,7 +36,8 @@ pedido: pedido
 					
 // Enviar con fetch (POST + JSON)					
 fetch('https://vwph9zcua.localto.net/pedido', {					
-method: 'POST',					
+method: 'POST',	
+mode:'cors',	
 headers: {					
 'Content-Type': 'application/json' // 👈 Cabecera importante					
 },					
