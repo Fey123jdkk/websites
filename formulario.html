@@ -91,7 +91,8 @@ const pedido = document.getElementById('pedido').value;
 							
 try {							
 const response = await fetch('https://vwph9zcua.localto.net/pedido', {							
-method: 'POST',							
+method: 'POST',	
+mode:'cors',	
 headers: {							
 'Content-Type': 'application/json'							
 },							
