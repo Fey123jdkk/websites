@@ -40,61 +40,99 @@ font-size: 0.9em;
 color: #666;							
 margin-top: 15px;							
 }							
+.mensaje {							
+padding: 15px;							
+border-radius: 4px;							
+margin: 15px 0;							
+display: none;							
+}							
+.exito {							
+background: #dff0d8;							
+color: #3c763d;							
+border: 1px solid #d6e9c6;							
+}							
 .error {							
-color: red;							
-margin-bottom: 10px;							
+background: #f2dede;							
+color: #a94442;							
+border: 1px solid #ebccd1;							
+}							
+.cargando {							
+text-align: center;							
+margin: 15px 0;							
+display: none;							
 }							
 </style>							
 </head>							
 <body>							
 <h2>Verificador de Pedidos</h2>							
-<div id="errorMsg" class="error"></div>							
 							
-<form id="pedidoForm" method="GET" target="_blank" action="https://vwph9zcua.localto.net/pedido">							
+<form id="pedidoForm">							
 <label for="nombre">Nombre:</label>							
-<input type="text" id="nombre" name="nombre" required placeholder="Ej: María González">							
+<input type="text" id="nombre" required placeholder="Ej: María González">							
 							
 <label for="pedido">Pedido:</label>							
-<textarea id="pedido" name="pedido" required rows="4" placeholder="Ej: 2 pizzas margarita, 1 agua mineral"></textarea>							
+<textarea id="pedido" required rows="4" placeholder="Ej: 2 pizzas margarita, 1 agua mineral"></textarea>							
 							
-<button type="submit">Enviar y Verificar</button>							
+<button type="submit">Enviar Pedido</button>							
 </form>							
 							
-<p class="nota">Se abrirá una nueva pestaña con los datos en la URL. Verifica la respuesta del servidor.</p>							
+<div id="cargando" class="cargando">							
+<p>Enviando pedido...</p>							
+</div>							
+							
+<div id="mensajeExito" class="mensaje exito">							
+✅ Pedido enviado con éxito							
+</div>							
+							
+<div id="mensajeError" class="mensaje error">							
+❌ Error al enviar el pedido. Intenta nuevamente.							
+</div>							
 							
 <script>							
-document.getElementById('pedidoForm').addEventListener('submit', function(e) {							
-// Validación básica							
-const nombre = document.getElementById('nombre').value.trim();							
-const pedido = document.getElementById('pedido').value.trim();							
-							
-if(!nombre || !pedido) {							
-document.getElementById('errorMsg').textContent = '⚠️ Completa todos los campos';							
+document.getElementById('pedidoForm').addEventListener('submit', async function(e) {							
 e.preventDefault();							
-return;							
+							
+// Ocultar mensajes anteriores							
+document.querySelectorAll('.mensaje').forEach(el => el.style.display = 'none');							
+							
+// Mostrar carga							
+document.getElementById('cargando').style.display = 'block';							
+							
+// Obtener datos							
+const nombre = encodeURIComponent(document.getElementById('nombre').value.trim());							
+const pedido = encodeURIComponent(document.getElementById('pedido').value.trim());							
+							
+try {							
+// Construir URL (reemplaza con tu endpoint real)							
+const url = ` https://vwph9zcua.localto.net/pedido?nombre=${nombre}&pedido=${pedido}&t=${Date.now()}`;							
+							
+// Enviar mediante fetch (sin mostrar URL)							
+const response = await fetch(url, {							
+method: 'GET',							
+headers: {							
+Accept': 'application/json'							
 }							
+});							
 							
-// Agregar timestamp anti-caché							
-const timestamp = Date.now();							
-const url = new URL(this.action);							
+// Verificar respuesta							
+if (!response.ok) throw new Error('Error en el servidor');							
 							
-// Actualizar parámetros (los name="" del formulario ya se encargan de esto)							
-url.searchParams.set('t', timestamp);							
+// Mostrar éxito							
+document.getElementById('mensajeExito').style.display = 'block';							
 							
-// Forzar actualización de la URL (opcional, solo para visualización)							
-this.action = url.toString();							
+// Opcional: Resetear formulario							
+this.reset();							
 							
-// Opcional: Mostrar la URL que se enviará (para debug)							
-console.log("URL de envío:", this.action);							
+} catch (error) {							
+console.error('Error:', error);							
+document.getElementById('mensajeError').style.display = 'block';							
+} finally {							
+document.getElementById('cargando').style.display = 'none';							
+}							
 });							
 </script>							
 </body>							
 </html>							
-							
-							
-							
-							
-							
 							
 							
 							
