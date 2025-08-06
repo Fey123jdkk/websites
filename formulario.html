@@ -1,114 +1,96 @@
-<!DOCTYPE html>					
-<html lang="es">					
-<head>					
-<meta charset="UTF-8">					
-<meta name="viewport" content="width=device-width, initial-scale=1.0">					
-<title>Verificador de Pedidos</title>					
-<style>					
-body {					
-font-family: Arial, sans-serif;					
-max-width: 500px;					
-margin: 20px auto;					
-padding: 20px;					
-line-height: 1.6;					
-}					
-form {					
-background: #f9f9f9;					
-padding: 20px;					
-border-radius: 8px;					
-}					
-input, textarea {					
-width: 100%;					
-padding: 8px;					
-margin-bottom: 10px;					
-border: 1px solid #ddd;					
-border-radius: 4px;					
-box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */					
-}					
-button {					
-background: #4CAF50;					
-color: white;					
-border: none;					
-padding: 10px 15px;					
-border-radius: 4px;					
-cursor: pointer;					
-width: 100%;					
-}					
-.nota {					
-font-size: 0.9em;					
-color: #666;					
-margin-top: 15px;					
-}					
-.error {					
-color: red;					
-margin-bottom: 10px;					
-}					
-</style>					
-</head>					
-<body>					
-<h2>Verificador de Pedidos</h2>					
-					
-<!-- Contenedor para mensajes de error -->					
-<div id="errorMsg" class="error"></div>					
-					
-<!-- Formulario con método GET explícito -->					
-<form id="pedidoForm" method="GET" target="_blank">					
-<label for="nombre">Nombre:</label>					
-<input type="text" id="nombre" required>					
-					
-<label for="pedido">Pedido:</label>					
-<textarea id="pedido" required rows="4"></textarea>					
-					
-<button type="submit">Enviar y Verificar</button>					
-</form>					
-					
-<p class="nota">Se abrirá una nueva pestaña con la URL de envío. Verifica si el servidor recibió los datos.</p>					
-					
-<script>					
-document.getElementById('pedidoForm').addEventListener('submit', function(e) {					
-// 1. Validar campos antes de enviar					
-const nombre = document.getElementById('nombre').value.trim();					
-const pedido = document.getElementById('pedido').value.trim();					
-					
-if(!nombre || !pedido) {					
-document.getElementById('errorMsg').textContent = 'Por favor completa todos los campos';					
-e.preventDefault();					
-return;					
-}					
-					
-// 2. Limpiar mensajes de error si todo está bien					
-document.getElementById('errorMsg').textContent = '';					
-					
-// 3. Codificar los valores para URL (evita problemas con caracteres especiales)					
-const nombreCodificado = encodeURIComponent(nombre);					
-const pedidoCodificado = encodeURIComponent(pedido);					
-					
-// 4. Construir la URL final con parámetros GET					
-//    Usamos Date.now() para evitar caché del navegador					
-const urlBase = 'https://vwph9zcua.localto.net/pedido';					
-const parametros = `?nombre=${nombreCodificado}&pedido=${pedidoCodificado}&t=${Date.now()}`;					
-					
-// 5. Asignar la URL completa al atributo action del formulario					
-this.action = urlBase + parametros;					
-					
-// 6. Opcional: Guardar en localStorage para referencia futura					
-try {					
-localStorage.setItem('ultimoPedido', JSON.stringify({					
-fecha: new Date().toISOString(),					
-nombre: nombre,					
-pedido: pedido					
-}));					
-} catch(e) {					
-console.warn('No se pudo guardar en localStorage:', e);					
-}					
-					
-// El formulario se enviará automáticamente con método GET					
-// y abrirá en nueva pestaña por el target="_blank"					
-});					
-</script>					
-</body>					
-</html>					
-					
+<!DOCTYPE html>							
+<html lang="es">							
+<head>							
+<meta charset="UTF-8">							
+<meta name="viewport" content="width=device-width, initial-scale=1.0">							
+<title>Verificador de Pedidos</title>							
+<style>							
+body {							
+font-family: Arial, sans-serif;							
+max-width: 500px;							
+margin: 20px auto;							
+padding: 20px;							
+line-height: 1.6;							
+}							
+form {							
+background: #f9f9f9;							
+padding: 20px;							
+border-radius: 8px;							
+}							
+input, textarea {							
+width: 100%;							
+padding: 8px;							
+margin-bottom: 10px;							
+border: 1px solid #ddd;							
+border-radius: 4px;							
+box-sizing: border-box;							
+}							
+button {							
+background: #4CAF50;							
+color: white;							
+border: none;							
+padding: 10px 15px;							
+border-radius: 4px;							
+cursor: pointer;							
+width: 100%;							
+font-size: 16px;							
+}							
+.nota {							
+font-size: 0.9em;							
+color: #666;							
+margin-top: 15px;							
+}							
+.error {							
+color: red;							
+margin-bottom: 10px;							
+}							
+</style>							
+</head>							
+<body>							
+<h2>Verificador de Pedidos</h2>							
+<div id="errorMsg" class="error"></div>							
+							
+<form id="pedidoForm" method="GET" target="_blank" action="https://vwph9zcua.localto.net/pedido">							
+<label for="nombre">Nombre:</label>							
+<input type="text" id="nombre" name="nombre" required placeholder="Ej: María González">							
+							
+<label for="pedido">Pedido:</label>							
+<textarea id="pedido" name="pedido" required rows="4" placeholder="Ej: 2 pizzas margarita, 1 agua mineral"></textarea>							
+							
+<button type="submit">Enviar y Verificar</button>							
+</form>							
+							
+<p class="nota">Se abrirá una nueva pestaña con los datos en la URL. Verifica la respuesta del servidor.</p>							
+							
+<script>							
+document.getElementById('pedidoForm').addEventListener('submit', function(e) {							
+// Validación básica							
+const nombre = document.getElementById('nombre').value.trim();							
+const pedido = document.getElementById('pedido').value.trim();							
+							
+if(!nombre || !pedido) {							
+document.getElementById('errorMsg').textContent = '⚠️ Completa todos los campos';							
+e.preventDefault();							
+return;							
+}							
+							
+// Agregar timestamp anti-caché							
+const timestamp = Date.now();							
+const url = new URL(this.action);							
+							
+// Actualizar parámetros (los name="" del formulario ya se encargan de esto)							
+url.searchParams.set('t', timestamp);							
+							
+// Forzar actualización de la URL (opcional, solo para visualización)							
+this.action = url.toString();							
+							
+// Opcional: Mostrar la URL que se enviará (para debug)							
+console.log("URL de envío:", this.action);							
+});							
+</script>							
+</body>							
+</html>							
+							
 							
 							
 							
