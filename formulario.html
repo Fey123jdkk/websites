@@ -1,76 +1,197 @@
-<!DOCTYPE html>							
-<html>							
-<head>							
-<meta charset="UTF-8">							
-<title>Envío GET Seguro</title>							
-<style>							
-#mensaje { padding: 10px; margin: 10px 0; display: none; }							
-.exito { background: #dfd; }							
-.error { background: #fdd; }							
-</style>							
-</head>							
-<body>							
-<form id="miFormulario">							
-<input type="text" id="nombre" placeholder="Nombre" required>							
-<textarea id="pedido" placeholder="Pedido" required></textarea>							
-<button type="submit">Enviar</button>							
-</form>							
-<div id="mensaje"></div>							
-							
-<script>							
-document.getElementById("miFormulario").addEventListener("submit", function(e) {							
-e.preventDefault();							
-							
+<!DOCTYPE html>						
+<html lang="es">						
+<head>						
+<meta charset="UTF-8">						
+<meta name="viewport" content="width=device-width, initial-scale=1.0">						
+<title>Envío de Pedidos</title>						
+<style>						
+:root {						
+--primary: #4a6fa5;						
+--success: #4caf50;						
+--error: #f44336;						
+--background: #f5f7fa;						
+}						
 						
-							
-// 2. Crear formulario oculto							
-const form = document.createElement("form");							
-form.method = "GET";							
-form.action = `https://vwph9zcua.localto.net/pedido?_=${Date.now()}`;							
-form.target = iframeId;							
-							
-// 3. Agregar campos							
-const addField = (name, value) => {							
-const input = document.createElement("input");							
-input.type = "hidden";							
-input.name = name;							
-input.value = value;							
-form.appendChild(input);							
-};							
-							
-addField("nombre", document.getElementById("nombre").value);							
-addField("pedido", document.getElementById("pedido").value);							
-							
-// 4. Enviar y limpiar							
-document.body.appendChild(form);							
-form.submit();							
-							
-// 5. Feedback visual (simulado)							
-mostrarMensaje("✅ Pedido en proceso...", "exito");							
-document.getElementById("miFormulario").reset();							
-							
-// Limpiar después de 3 segundos							
-setTimeout(() => {							
-iframe.remove();							
-form.remove();							
-}, 3000);							
-});							
-							
-function mostrarMensaje(texto, tipo) {							
-const div = document.getElementById("mensaje");							
-div.textContent = texto;							
-div.style.display = "block";							
-div.className = tipo;							
-}							
-</script>							
-</body>							
-</html>							
-							
-							
-							
-							
-							
-							
+body {						
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;						
+background-color: var(--background);						
+margin: 0;						
+padding: 20px;						
+display: flex;						
+justify-content: center;						
+align-items: center;						
+min-height: 100vh;						
+}						
+						
+.container {						
+background: white;						
+border-radius: 10px;						
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);						
+width: 100%;						
+max-width: 500px;						
+padding: 30px;						
+}						
+						
+h1 {						
+color: var(--primary);						
+text-align: center;						
+margin-bottom: 25px;						
+}						
+						
+.form-group {						
+margin-bottom: 20px;						
+}						
+						
+label {						
+display: block;						
+margin-bottom: 8px;						
+font-weight: 600;						
+color: #333;						
+}						
+						
+input, textarea {						
+width: 100%;						
+padding: 12px;						
+border: 1px solid #ddd;						
+border-radius: 6px;						
+font-size: 16px;						
+transition: border 0.3s;						
+box-sizing: border-box;						
+}						
+						
+input:focus, textarea:focus {						
+border-color: var(--primary);						
+outline: none;						
+box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.2);						
+}						
+						
+textarea {						
+min-height: 100px;						
+resize: vertical;						
+}						
+						
+button {						
+background-color: var(--primary);						
+color: white;						
+border: none;						
+border-radius: 6px;						
+padding: 14px;						
+width: 100%;						
+font-size: 16px;						
+font-weight: 600;						
+cursor: pointer;						
+transition: background-color 0.3s;						
+}						
+						
+button:hover {						
+background-color: #3a5a8f;						
+}						
+						
+button:disabled {						
+background-color: #cccccc;						
+cursor: not-allowed;						
+}						
+						
+.alert {						
+padding: 15px;						
+border-radius: 6px;						
+margin-top: 20px;						
+display: none;						
+}						
+						
+.alert-success {						
+background-color: #e8f5e9;						
+color: var(--success);						
+border: 1px solid #c8e6c9;						
+}						
+						
+.alert-error {						
+background-color: #ffebee;						
+color: var(--error);						
+border: 1px solid #ffcdd2;						
+}						
+						
+.hidden-frame {						
+position: absolute;						
+width: 1px;						
+height: 1px;						
+padding: 0;						
+margin: -1px;						
+overflow: hidden;						
+clip: rect(0, 0, 0, 0);						
+border: 0;						
+}						
+</style>						
+</head>						
+<body>						
+<div class="container">						
+<h1>Formulario de Pedidos</h1>						
+<form id="pedidoForm">						
+<div class="form-group">						
+<label for="nombre">Nombre:</label>						
+<input type="text" id="nombre" required placeholder="Tu nombre completo">						
+</div>						
+						
+<div class="form-group">						
+<label for="pedido">Detalles del pedido:</label>						
+<textarea id="pedido" required placeholder="Describe tu pedido aquí..."></textarea>						
+</div>						
+						
+<button type="submit" id="submitBtn">Enviar Pedido</button>						
+						
+<div id="mensaje" class="alert"></div>						
+</form>						
+						
+<!-- Iframe oculto para la redirección -->						
+<iframe id="hiddenFrame" name="hiddenFrame" class="hidden-frame"></iframe>						
+</div>						
+						
+<script>						
+document.getElementById('pedidoForm').addEventListener('submit', function(e) {						
+e.preventDefault();						
+						
+// Mostrar estado de carga						
+const submitBtn = document.getElementById('submitBtn');						
+submitBtn.disabled = true;						
+submitBtn.textContent = 'Enviando...';						
+						
+const mensaje = document.getElementById('mensaje');						
+mensaje.style.display = 'none';						
+						
+// Obtener y codificar valores						
+const nombre = encodeURIComponent(document.getElementById('nombre').value);						
+const pedido = encodeURIComponent(document.getElementById('pedido').value);						
+						
+// Crear formulario oculto para redirección						
+const hiddenForm = document.createElement('form');						
+hiddenForm.method = 'GET';						
+hiddenForm.action = ` https://vwph9zcua.localto.net/pedido?nombre=${nombre}&pedido=${pedido}&_=${Date.now()}`;						
+hiddenForm.target = 'hiddenFrame';						
+document.body.appendChild(hiddenForm);						
+						
+// Disparar el envío						
+hiddenForm.submit();						
+						
+// Mostrar mensaje de éxito (simulado)						
+setTimeout(() => {						
+mensaje.textContent = '✅ Pedido enviado correctamente';						
+mensaje.className = 'alert alert-success';						
+mensaje.style.display = 'block';						
+						
+submitBtn.disabled = false;						
+submitBtn.textContent = 'Enviar Pedido';						
+document.getElementById('pedidoForm').reset();						
+						
+// Limpiar formulario oculto						
+hiddenForm.remove();						
+}, 1500);						
+});						
+</script>						
+</body>						
+</html>						
+						
+						
+						
 							
 							
 							
