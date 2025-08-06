@@ -21,12 +21,7 @@
 document.getElementById("miFormulario").addEventListener("submit", function(e) {							
 e.preventDefault();							
 							
-// 1. Crear iframe con nombre único							
-const iframeId = "hiddenFrame_" + Date.now();							
-const iframe = document.createElement("iframe");							
-iframe.name = iframeId;							
-iframe.style.display = "none";							
-document.body.appendChild(iframe);							
+						
 							
 // 2. Crear formulario oculto							
 const form = document.createElement("form");							
