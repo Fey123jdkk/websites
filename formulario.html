@@ -35,11 +35,6 @@ cursor: pointer;
 width: 100%;							
 font-size: 16px;							
 }							
-.nota {							
-font-size: 0.9em;							
-color: #666;							
-margin-top: 15px;							
-}							
 .mensaje {							
 padding: 15px;							
 border-radius: 4px;							
@@ -56,9 +51,7 @@ background: #f2dede;
 color: #a94442;							
 border: 1px solid #ebccd1;							
 }							
-.cargando {							
-text-align: center;							
-margin: 15px 0;							
+#iframeInvisible {							
 display: none;							
 }							
 </style>							
@@ -76,10 +69,6 @@ display: none;
 <button type="submit">Enviar Pedido</button>							
 </form>							
 							
-<div id="cargando" class="cargando">							
-<p>Enviando pedido...</p>							
-</div>							
-							
 <div id="mensajeExito" class="mensaje exito">							
 ✅ Pedido enviado con éxito							
 </div>							
@@ -88,54 +77,49 @@ display: none;
 ❌ Error al enviar el pedido. Intenta nuevamente.							
 </div>							
 							
+<!-- Iframe invisible para el envío -->							
+<iframe id="iframeInvisible" name="iframeInvisible"></iframe>							
+							
 <script>							
-document.getElementById('pedidoForm').addEventListener('submit', async function(e) {							
+document.getElementById('pedidoForm').addEventListener('submit', function(e) {							
 e.preventDefault();							
 							
 // Ocultar mensajes anteriores							
-document.querySelectorAll('.mensaje').forEach(el => el.style.display = 'none');							
+document.getElementById('mensajeExito').style.display = 'none';							
+document.getElementById('mensajeError').style.display = 'none';							
 							
-// Mostrar carga							
-document.getElementById('cargando').style.display = 'block';							
-							
-// Obtener datos							
+// Obtener y codificar datos							
 const nombre = encodeURIComponent(document.getElementById('nombre').value.trim());							
 const pedido = encodeURIComponent(document.getElementById('pedido').value.trim());							
 							
-try {							
-// Construir URL (reemplaza con tu endpoint real)							
-const url = ` https://vwph9zcua.localto.net/pedido?nombre=${nombre}&pedido=${pedido}&t=${Date.now()}`;							
+// Crear formulario dinámico							
+const form = document.createElement('form');							
+form.method = 'GET';							
+form.action = `https://vwph9zcua.localto.net/pedido?nombre=${nombre}&pedido=${pedido}&t=${Date.now()}`;							
+form.target = 'iframeInvisible'; // Apunta al iframe invisible							
 							
-// Enviar mediante fetch (sin mostrar URL)							
-const response = await fetch(url, {							
-method: 'GET',							
-headers: {							
-Accept: 'application/json'							
-}							
-});							
+// Adjuntar y enviar							
+document.body.appendChild(form);							
+form.submit();							
+document.body.removeChild(form);							
 							
-// Verificar respuesta							
-if (!response.ok) throw new Error('Error en el servidor');							
-							
-// Mostrar éxito							
+// Asumimos éxito después de enviar (para un control real necesitarías CORS)							
 document.getElementById('mensajeExito').style.display = 'block';							
 							
 // Opcional: Resetear formulario							
 this.reset();							
 							
-} catch (error) {							
-console.error('Error:', error);							
-document.getElementById('mensajeError').style.display = 'block';							
-} finally {							
-document.getElementById('cargando').style.display = 'none';							
-}							
+// Si necesitas verificar realmente la respuesta:							
+// 1. Tu servidor debería permitir CORS							
+// 2. Podríamos usar el evento onload del iframe							
+document.getElementById('iframeInvisible').onload = function() {							
+// Aquí podrías verificar el contenido del iframe							
+// console.log(this.contentWindow.document.body.innerHTML);							
+};							
 });							
 </script>							
 </body>							
 </html>							
-							
-							
-							
 							
 							
 							
