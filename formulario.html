@@ -82,7 +82,8 @@ const url = `https://vwph9zcua.localto.net/pedido?nombre=${nombre}&pedido=${pedi
 // window.location.href = url;					
 					
 /* Método 2: Fetch API (recomendado) */					
-fetch(url, { method: 'GET' })					
+fetch(url, { method: 'GET', mode:'no-cors' })	
+	
 .then(response => {					
 if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);					
 return response.json();					
